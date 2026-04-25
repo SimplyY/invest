@@ -114,8 +114,17 @@ function formatSignedTableMoney(value: number): string {
   return `${qian}千`;
 }
 
-function buildRecommendationsTableLines(recommendations: PositionRecommendation[]): string[] {
-  type Row = { idx: string; name: string; dir: string; cur: string; op: string; after: string };
+function buildRecommendationsTableLines(
+  recommendations: PositionRecommendation[],
+): string[] {
+  type Row = {
+    idx: string;
+    name: string;
+    dir: string;
+    cur: string;
+    op: string;
+    after: string;
+  };
   const rows: Row[] = recommendations.map((item, index) => {
     const abbreviated = abbreviateFundName(item.name, item.category);
     return {
@@ -138,7 +147,14 @@ function buildRecommendationsTableLines(recommendations: PositionRecommendation[
   };
 
   const keys = ["idx", "name", "dir", "cur", "op", "after"] as const;
-  const aligns: Array<"left" | "right"> = ["right", "left", "left", "right", "right", "right"];
+  const aligns: Array<"left" | "right"> = [
+    "right",
+    "left",
+    "left",
+    "right",
+    "right",
+    "right",
+  ];
 
   const widths = keys.map((key) => {
     if (key === "idx") {

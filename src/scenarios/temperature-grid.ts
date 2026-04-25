@@ -1,11 +1,17 @@
 import { DEFAULT_PORTFOLIO_PATH, DEFAULT_STRATEGY_PATH } from "../config.js";
 import { loadPortfolio, loadStrategy } from "../loaders.js";
 import { evaluateStrategy } from "../strategy.js";
-import type { PortfolioPosition, PositionRole, StrategyEvaluationResult } from "../types.js";
+import type {
+  PortfolioPosition,
+  PositionRole,
+  StrategyEvaluationResult,
+} from "../types.js";
 import { formatCurrency, formatSignedCurrency } from "../utils.js";
 import { pathToFileURL } from "node:url";
 
-export const DEFAULT_TEMPERATURES = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+export const DEFAULT_TEMPERATURES = [
+  0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100,
+];
 
 function parseTemperatures(): number[] {
   const raw = process.env.TEMPERATURE_GRID;
@@ -34,7 +40,10 @@ function padCell(value: string, width: number): string {
   return `${value}${" ".repeat(padding)}`;
 }
 
-export function buildMarkdownTable(headers: string[], rows: string[][]): string {
+export function buildMarkdownTable(
+  headers: string[],
+  rows: string[][],
+): string {
   const allRows = [headers, ...rows];
   const columnCount = headers.length;
   const widths = Array.from({ length: columnCount }, (_, columnIndex) =>
@@ -52,7 +61,9 @@ export function buildMarkdownTable(headers: string[], rows: string[][]): string 
 function getRecommendationMap(
   evaluation: StrategyEvaluationResult,
 ): Map<string, StrategyEvaluationResult["recommendations"][number]> {
-  return new Map(evaluation.recommendations.map((item) => [item.positionId, item]));
+  return new Map(
+    evaluation.recommendations.map((item) => [item.positionId, item]),
+  );
 }
 
 function getRoleLabel(role: PositionRole): string {
@@ -75,7 +86,9 @@ export function renderAmountMatrix(
   const rows = portfolio.map((position) => {
     const cells = evaluations.map((evaluation) => {
       const recommendation = getRecommendationMap(evaluation).get(position.id);
-      return recommendation ? formatCurrency(recommendation.projectedValue) : "-";
+      return recommendation
+        ? formatCurrency(recommendation.projectedValue)
+        : "-";
     });
 
     return [`${position.name} (${getRoleLabel(position.role)})`, ...cells];
@@ -93,7 +106,9 @@ export function renderDeltaMatrix(
   const rows = portfolio.map((position) => {
     const cells = evaluations.map((evaluation) => {
       const recommendation = getRecommendationMap(evaluation).get(position.id);
-      return recommendation ? formatSignedCurrency(recommendation.suggestedDeltaValue) : "-";
+      return recommendation
+        ? formatSignedCurrency(recommendation.suggestedDeltaValue)
+        : "-";
     });
 
     return [position.name, ...cells];
@@ -141,7 +156,12 @@ export function renderBandRow(
   const headers = ["维度", ...temperatures.map((temp) => `${temp}°`)];
   const rows = [
     ["区间", ...evaluations.map((evaluation) => evaluation.band.label)],
-    ["总资产基准", ...evaluations.map((evaluation) => formatCurrency(evaluation.totalValueBasis))],
+    [
+      "总资产基准",
+      ...evaluations.map((evaluation) =>
+        formatCurrency(evaluation.totalValueBasis),
+      ),
+    ],
   ];
 
   return buildMarkdownTable(headers, rows);
@@ -164,16 +184,14 @@ export async function main(): Promise<void> {
   console.log("=== PROJECTED VALUE MATRIX ===");
   console.log(renderAmountMatrix(portfolio, temperatures, evaluations));
   console.log("");
-  console.log("=== DELTA MATRIX ===");
-  console.log(renderDeltaMatrix(portfolio, temperatures, evaluations));
+  // console.log("=== DELTA MATRIX ===");
+  // console.log(renderDeltaMatrix(portfolio, temperatures, evaluations));
   console.log("");
   console.log("=== POOL SUMMARY MATRIX ===");
   console.log(renderPoolMatrix(temperatures, evaluations));
 }
 
-const entrypoint = process.argv[1]
-  ? pathToFileURL(process.argv[1]).href
-  : null;
+const entrypoint = process.argv[1] ? pathToFileURL(process.argv[1]).href : null;
 
 if (entrypoint === import.meta.url) {
   main().catch((error) => {
