@@ -57,7 +57,7 @@ jobs:
         if: hashFiles('state.json') != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh variable set STATE_JSON --body-file state.json
+        run: cat state.json | gh variable set STATE_JSON
 
       - name: Upload runtime state artifact
         if: hashFiles('state.json') != ''
