@@ -34,6 +34,8 @@ jobs:
           STRATEGY_JSON: ${{ secrets.STRATEGY_JSON }}
           STATE_JSON: ${{ vars.STATE_JSON }}
         run: |
+          mkdir -p data
+          
           if [ -n "$PORTFOLIO_JSON" ]; then
             printf '%s\n' "$PORTFOLIO_JSON" > data/portfolio.json
           fi
