@@ -56,8 +56,8 @@ jobs:
       - name: Persist updated state to repository variable
         if: hashFiles('state.json') != ''
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: cat state.json | gh variable set STATE_JSON
+          GH_TOKEN: ${{ secrets.VARIABLES_PAT }}
+        run: gh variable set STATE_JSON --body "$(cat state.json)"
 
       - name: Upload runtime state artifact
         if: hashFiles('state.json') != ''
