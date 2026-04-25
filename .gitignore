@@ -4,5 +4,5 @@ coverage
 .DS_Store
 .env
 .env.local
-data/portfolio.json
-data/strategy.json
+# data/portfolio.json
+# data/strategy.json
