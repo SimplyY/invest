@@ -1,0 +1,24 @@
+{
+  "name": "investment-bond-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bond allocation decision agent with Feishu notifications and GitHub Actions automation.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "tsx src/bootstrap.ts",
+    "start:dry": "DRY_RUN=1 tsx src/bootstrap.ts",
+    "strategy:grid": "tsx src/scenarios/temperature-grid.ts",
+    "check": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
