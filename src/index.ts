@@ -26,7 +26,13 @@ async function main(): Promise<void> {
   ]);
 
   const evaluation = evaluateStrategy(portfolio, strategy, snapshot.temperature);
-  const shouldTrigger = FORCE_TRIGGER || state.lastTriggeredBandId !== evaluation.band.id;
+  const temperatureDiff =
+    state.lastObservedTemperature === null
+      ? Number.POSITIVE_INFINITY
+      : Math.abs(snapshot.temperature - state.lastObservedTemperature);
+  const bandChanged = state.lastTriggeredBandId !== evaluation.band.id;
+  const shouldTrigger =
+    FORCE_TRIGGER || (bandChanged && temperatureDiff >= 6);
 
   const dailyReport = renderDailyCheckin(snapshot, evaluation, shouldTrigger);
   if (DRY_RUN) {
