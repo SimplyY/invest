@@ -1,0 +1,44 @@
+{
+  "bands": [
+    { "id": "0to5", "label": "0-5", "min": 0, "max": 5, "signal": 1.2 },
+    { "id": "5to10", "label": "5-10", "min": 5, "max": 10, "signal": 0.9 },
+    { "id": "10to20", "label": "10-20", "min": 10, "max": 20, "signal": 0.8 },
+    { "id": "20to30", "label": "20-30", "min": 20, "max": 30, "signal": 0.5 },
+    { "id": "30to50", "label": "30-50", "min": 30, "max": 50, "signal": 0.3 },
+    { "id": "50to70", "label": "50-70", "min": 50, "max": 70, "signal": -0.2 },
+    { "id": "70to80", "label": "70-80", "min": 70, "max": 80, "signal": -0.5 },
+    { "id": "80to90", "label": "80-90", "min": 80, "max": 90, "signal": -0.9 },
+    { "id": "90to95", "label": "90-95", "min": 90, "max": 95, "signal": -1 },
+    { "id": "gte95", "label": ">=95", "min": 95, "max": null, "signal": -1.5 }
+  ],
+  "formula": {
+    "targetTotalValue": 600000,
+    "signalScale": 0.1,
+    "durationScaleYears": 6,
+    "minDurationFactor": 0.3,
+    "maxDurationFactor": 2.2,
+    "riskMultipliers": {
+      "low": 0.7,
+      "medium": 1,
+      "high": 1.3
+    },
+    "roundingUnit": 100,
+    "lowEntropyRange": {
+      "min": 30,
+      "max": 50,
+      "damping": 0.2
+    },
+    "hotZone": {
+      "thresholdTemperature": 70,
+      "durationThresholdYears": 1.8,
+      "exponentBase": 1.5,
+      "temperatureStep": 5
+    },
+    "coldLiquidityReserve": 100000,
+    "activePriorityBoost": 1.35,
+    "activePriorityTemperature": 20,
+    "activeMinValueById": {
+      "xing-quan-wen-tai": 30000
+    }
+  }
+}
