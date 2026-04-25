@@ -28,8 +28,9 @@
 - `src/scraper.ts`：数据抓取
 - `src/report.ts`：消息文本渲染
 - `src/feishu.ts`：当前 webhook 发送实现
-- `data/portfolio.json`：真实组合配置
-- `data/strategy.json`：真实策略配置
+- `data/portfolio.json`：本地真实组合配置，默认忽略 Git
+- `data/strategy.json`：本地真实策略配置，默认忽略 Git
+- `state.json`：运行态状态文件，自动生成，默认忽略 Git
 - `.github/workflows/investment_bot.yml`：定时任务
 
 ## 最常用命令

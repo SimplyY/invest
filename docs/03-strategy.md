@@ -2,7 +2,7 @@
 
 ## 组合配置文件
 
-真实组合在 [data/portfolio.json](/Users/yuwei/Documents/code/invest/data/portfolio.json:1)。
+真实组合默认落在本地忽略文件 [data/portfolio.json](/Users/yuwei/Documents/code/invest/data/portfolio.json:1)。
 
 关键字段：
 
@@ -15,7 +15,7 @@
 
 ## 策略配置文件
 
-真实策略在 [data/strategy.json](/Users/yuwei/Documents/code/invest/data/strategy.json:1)。
+真实策略默认落在本地忽略文件 [data/strategy.json](/Users/yuwei/Documents/code/invest/data/strategy.json:1)。
 
 关键结构：
 

@@ -43,6 +43,12 @@ FORCE_TRIGGER=1 npm run start:dry
 npm run strategy:grid
 ```
 
+首次本地生成忽略配置：
+
+```bash
+npm run config:init
+```
+
 真实发送飞书消息：
 
 ```bash
@@ -60,5 +66,11 @@ cp .env.example .env.local
 ```bash
 FEISHU_WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/xxxx"
 ```
+
+配置优先级现在是：
+
+1. `PORTFOLIO_JSON / STRATEGY_JSON / STATE_JSON`
+2. 本地忽略文件 `data/portfolio.json`、`data/strategy.json`、`state.json`
+3. 示例文件提示
 
 自动化落地步骤直接看 [自动化上线清单](./docs/04-automation.md)。

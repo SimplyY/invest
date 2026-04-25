@@ -11,6 +11,7 @@
     "start": "tsx src/bootstrap.ts",
     "start:dry": "DRY_RUN=1 tsx src/bootstrap.ts",
     "strategy:grid": "tsx src/scenarios/temperature-grid.ts",
+    "config:init": "node scripts/init-local-config.mjs",
     "check": "tsc --noEmit",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"

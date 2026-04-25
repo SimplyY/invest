@@ -20,6 +20,14 @@ function parseJson(content: string, label: string): unknown {
   }
 }
 
+function readJsonFromEnv(envValue: string | undefined, label: string): unknown | null {
+  if (!envValue || envValue.trim() === "") {
+    return null;
+  }
+
+  return parseJson(envValue, label);
+}
+
 async function readJsonFile(filePath: string, missingHint: string): Promise<unknown> {
   try {
     const content = await readFile(filePath, "utf8");
@@ -295,7 +303,9 @@ function validateStrategy(raw: unknown): StrategyConfig {
 export async function loadPortfolio(
   portfolioPath = DEFAULT_PORTFOLIO_PATH,
 ): Promise<PortfolioPosition[]> {
-  const raw = await readJsonFile(portfolioPath, PORTFOLIO_EXAMPLE_PATH);
+  const raw =
+    readJsonFromEnv(process.env.PORTFOLIO_JSON, "PORTFOLIO_JSON") ??
+    (await readJsonFile(portfolioPath, PORTFOLIO_EXAMPLE_PATH));
   const portfolio = validatePortfolio(raw);
 
   if (portfolio.length === 0) {
@@ -308,6 +318,8 @@ export async function loadPortfolio(
 export async function loadStrategy(
   strategyPath = DEFAULT_STRATEGY_PATH,
 ): Promise<StrategyConfig> {
-  const raw = await readJsonFile(strategyPath, STRATEGY_EXAMPLE_PATH);
+  const raw =
+    readJsonFromEnv(process.env.STRATEGY_JSON, "STRATEGY_JSON") ??
+    (await readJsonFile(strategyPath, STRATEGY_EXAMPLE_PATH));
   return validateStrategy(raw);
 }

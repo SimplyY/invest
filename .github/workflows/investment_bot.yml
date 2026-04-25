@@ -6,7 +6,8 @@ on:
     - cron: "30 1 * * *"
 
 permissions:
-  contents: write
+  contents: read
+  actions: write
 
 jobs:
   run-agent:
@@ -27,20 +28,39 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore runtime config from Secrets and Variables
+        env:
+          PORTFOLIO_JSON: ${{ secrets.PORTFOLIO_JSON }}
+          STRATEGY_JSON: ${{ secrets.STRATEGY_JSON }}
+          STATE_JSON: ${{ vars.STATE_JSON }}
+        run: |
+          if [ -n "$PORTFOLIO_JSON" ]; then
+            printf '%s\n' "$PORTFOLIO_JSON" > data/portfolio.json
+          fi
+
+          if [ -n "$STRATEGY_JSON" ]; then
+            printf '%s\n' "$STRATEGY_JSON" > data/strategy.json
+          fi
+
+          if [ -n "$STATE_JSON" ]; then
+            printf '%s\n' "$STATE_JSON" > state.json
+          fi
+
       - name: Run investment bot
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
         run: npm run start
 
-      - name: Commit and push updated state
-        run: |
-          if git diff --quiet -- state.json; then
-            echo "state.json unchanged; nothing to commit."
-            exit 0
-          fi
+      - name: Persist updated state to repository variable
+        if: hashFiles('state.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh variable set STATE_JSON --body-file state.json
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add state.json
-          git commit -m "chore: update investment state"
-          git push origin HEAD:${{ github.ref_name }}
+      - name: Upload runtime state artifact
+        if: hashFiles('state.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-state
+          path: state.json
+          if-no-files-found: ignore

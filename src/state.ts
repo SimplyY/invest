@@ -10,14 +10,26 @@ const defaultState: PersistedState = {
   lastObservedYieldRate: null,
 };
 
-export async function loadState(statePath = STATE_PATH): Promise<PersistedState> {
+function parseStateJson(content: string, label: string): PersistedState {
   try {
-    const raw = await readFile(statePath, "utf8");
-    const parsed = JSON.parse(raw) as Partial<PersistedState>;
+    const parsed = JSON.parse(content) as Partial<PersistedState>;
     return {
       ...defaultState,
       ...parsed,
     };
+  } catch (error) {
+    throw new Error(`${label} 不是合法 JSON: ${(error as Error).message}`);
+  }
+}
+
+export async function loadState(statePath = STATE_PATH): Promise<PersistedState> {
+  if (process.env.STATE_JSON && process.env.STATE_JSON.trim() !== "") {
+    return parseStateJson(process.env.STATE_JSON, "STATE_JSON");
+  }
+
+  try {
+    const raw = await readFile(statePath, "utf8");
+    return parseStateJson(raw, statePath);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
       return { ...defaultState };
