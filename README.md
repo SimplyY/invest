@@ -28,13 +28,13 @@ npm install
 本地干跑：
 
 ```bash
-npm run start:dry
+npm start
 ```
 
 强制预览调仓建议：
 
 ```bash
-FORCE_TRIGGER=1 npm run start:dry
+FORCE_TRIGGER=1 npm start
 ```
 
 温度矩阵调参：
@@ -52,7 +52,7 @@ npm run config:init
 真实发送飞书消息：
 
 ```bash
-npm run start
+npm run notify
 ```
 
 ## 本地环境变量
