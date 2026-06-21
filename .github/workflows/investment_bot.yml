@@ -15,7 +15,6 @@ on:
     - cron: "30 1 * * *"
 
 permissions:
-  actions: write
   contents: read
 
 concurrency:
@@ -44,12 +43,18 @@ jobs:
       - name: Check code
         run: npm run check && npm test
 
+      - name: Restore runtime state
+        uses: actions/cache/restore@v5
+        with:
+          path: state.json
+          key: investment-state-${{ github.run_id }}
+          restore-keys: investment-state-
+
       - name: Run investment bot
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
           PORTFOLIO_JSON: ${{ secrets.PORTFOLIO_JSON }}
           STRATEGY_JSON: ${{ secrets.STRATEGY_JSON }}
-          STATE_JSON: ${{ vars.STATE_JSON }}
           FORCE_TRIGGER: ${{ inputs.force_trigger && '1' || '' }}
         run: |
           if [[ "${{ github.event_name }}" == "schedule" || "${{ inputs.send_notification }}" == "true" ]]; then
@@ -58,11 +63,12 @@ jobs:
             npm start
           fi
 
-      - name: Persist updated state to repository variable
+      - name: Persist runtime state
         if: success() && hashFiles('state.json') != '' && (github.event_name == 'schedule' || inputs.send_notification)
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh variable set STATE_JSON --body "$(cat state.json)"
+        uses: actions/cache/save@v5
+        with:
+          path: state.json
+          key: investment-state-${{ github.run_id }}
 
       - name: Upload runtime state artifact
         if: always() && hashFiles('state.json') != ''
