@@ -34,23 +34,21 @@ async function main(): Promise<void> {
   const shouldTrigger =
     FORCE_TRIGGER || (bandChanged && temperatureDiff >= 6);
 
-  const dailyReport = renderDailyCheckin(snapshot, evaluation, shouldTrigger);
   if (DRY_RUN) {
+    const dailyReport = renderDailyCheckin(snapshot, evaluation, shouldTrigger);
     console.log("=== DAILY CHECKIN ===");
     console.log(dailyReport);
-  } else {
-    await sendFeishuMarkdown(webhookUrl!, "债券环境打卡", dailyReport);
-  }
 
-  if (shouldTrigger) {
-    const strategyReport = renderStrategyAlert(snapshot, evaluation);
-    if (DRY_RUN) {
+    if (shouldTrigger) {
+      const strategyReport = renderStrategyAlert(snapshot, evaluation);
       console.log("");
       console.log("=== STRATEGY ALERT ===");
       console.log(strategyReport);
-    } else {
-      await sendFeishuMarkdown(webhookUrl!, "债券组合调仓建议", strategyReport);
     }
+  } else if (shouldTrigger) {
+    // 仅在策略触发时发送提醒，取消每日打卡
+    const strategyReport = renderStrategyAlert(snapshot, evaluation);
+    await sendFeishuMarkdown(webhookUrl!, "债券组合调仓建议", strategyReport);
   }
 
   if (!DRY_RUN) {
